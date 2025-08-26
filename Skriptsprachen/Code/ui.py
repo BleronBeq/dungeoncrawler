@@ -17,4 +17,3 @@ class HealthBar:
         pygame.draw.rect(surface, (255,0,0), (self.x, self.y, self.width, self.height))
         health_width = (self.current_health / self.max_health) * self.width
         pygame.draw.rect(surface, (0,255,0), (self.x, self.y, health_width, self.height))
-

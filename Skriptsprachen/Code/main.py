@@ -82,6 +82,7 @@ class Spiel:
                                 self.screen.blit(scaled_image, (screen_x, screen_y))
                     except Exception as e:
                         print(f"Fehler beim Zeichnen des Layers {getattr(layer, 'name', 'unbekannt')}: {e}")
+                        
             # Spieler updaten und zeichnen
             keys = pygame.key.get_pressed()
             dt = self.clock.get_time()
@@ -95,14 +96,21 @@ class Spiel:
                     scaled_sprite,
                     ((sprite.rect.x - offset[0]) * self.zoom, (sprite.rect.y - offset[1]) * self.zoom)
                 )
+            
+            # HealthBar
+            self.health_bar.update(self.player.health)
+            self.health_bar.draw(self.screen)
+            
             # Exit-Check
             player_rect = self.player.rect
             for exit_obj in self.exits:
                 if player_rect.colliderect(exit_obj["rect"]):
-                    print("Exit getroffen! Nächste Map:", exit_obj["nextMap"])
-                    if exit_obj["nextMap"]:
-                        self.load_map(exit_obj["nextMap"])
-                        break
+                    if keys[pygame.K_e]:
+                        print("Exit getroffen! Nächste Map:", exit_obj["nextMap"])
+                        if exit_obj["nextMap"]:
+                            self.load_map(exit_obj["nextMap"])
+                            break
+            
             pygame.display.flip()
             self.clock.tick(60)
 
