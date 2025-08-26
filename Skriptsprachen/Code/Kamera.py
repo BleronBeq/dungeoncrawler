@@ -30,7 +30,6 @@ class Kamera(pygame.sprite.Sprite):
         elif py > dz_bottom:
             self.camera.y += py - dz_bottom
 
-        # Kamera immer auf Spieler zentrieren
         self.camera.center = self.player.rect.center
         # Begrenzung der Kamera innerhalb der Spielwelt (hier Beispielgröße, ggf. anpassen)
         self.camera.clamp_ip(pygame.Rect(0, 0, 1920, 1920))

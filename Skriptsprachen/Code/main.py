@@ -27,7 +27,7 @@ class Spiel:
                     if gid != 0:
                         self.collision_tiles.add((x, y))
 
-        # Spawn suchen (Objektgruppe "playerSpawn")
+        # Spawn suchen
         spawn_x, spawn_y = 100, 100
         for layer in self.tmx_data.layers:
             if getattr(layer, 'name', '') == "playerSpawn":
