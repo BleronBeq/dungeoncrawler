@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="19" nextobjectid="1">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="32" tileheight="32" infinite="0" nextlayerid="22" nextobjectid="18">
  <editorsettings>
   <export target="../export/map.tmx" format="tmx"/>
  </editorsettings>
@@ -7,7 +7,7 @@
  <tileset firstgid="443" name="rogues" tilewidth="32" tileheight="32" tilecount="49" columns="7">
   <image source="../Sprites/rogues.png" width="224" height="224"/>
  </tileset>
- <layer id="12" name="Boden" width="30" height="30">
+ <layer id="12" name="Boden" width="30" height="30" locked="1">
   <data encoding="csv">
 103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,
 103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,
@@ -31,7 +31,7 @@
 103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,
 103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,
 103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,
-103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,
+103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,280,103,103,103,103,103,103,103,103,
 103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,
 103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,
 103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,
@@ -41,7 +41,7 @@
 103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103
 </data>
  </layer>
- <layer id="15" name="Gras &amp; Steine" width="30" height="30">
+ <layer id="15" name="Gras &amp; Steine" width="30" height="30" locked="1">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -75,7 +75,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer id="13" name="Wände" width="30" height="30">
+ <layer id="13" name="Wände" width="30" height="30" locked="1">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 86,87,87,87,87,87,87,87,87,86,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -109,7 +109,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer id="14" name="Türen" width="30" height="30">
+ <layer id="14" name="Türen" width="30" height="30" locked="1">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -144,5 +144,19 @@
 </data>
  </layer>
  <objectgroup id="17" name="Entities"/>
- <objectgroup id="16" name="Objects"/>
+ <objectgroup id="20" name="Trigger"/>
+ <objectgroup id="21" name="exit">
+  <object id="16" x="673" y="705" width="30" height="28">
+   <properties>
+    <property name="nextMap" value="Tiled-Map2.tmx"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="16" name="playerSpawn" locked="1">
+  <object id="15" x="57" y="73" width="54" height="42">
+   <properties>
+    <property name="name = &quot;playerSpawn&quot;&#10;type = &quot;spawn&quot;&#10;" value=""/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

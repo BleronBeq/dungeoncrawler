@@ -1,6 +1,6 @@
 import pygame
 import math
-
+from ui import HealthBar
 #Spielerfigur
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, collision_tiles, tilewidth, tileheight):
@@ -18,6 +18,8 @@ class Player(pygame.sprite.Sprite):
         self.tileheight = tileheight
         self.pos_x = float(self.rect.x)
         self.pos_y = float(self.rect.y)
+        self.health = 100  # Aktuelle Gesundheit
+        self.max_health = 100  # Maximale Gesundheit
 
     def can_move(self, dx, dy):
         new_rect = self.rect.move(dx, dy)
