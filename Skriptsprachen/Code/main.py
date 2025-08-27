@@ -3,6 +3,7 @@ from Spieler import Player
 from pytmx.util_pygame import load_pygame
 from Kamera import *
 from ui import HealthBar
+from menu import Menu
 
 class Spiel:
     def __init__(self, map_path="C:/Users/Admin/OneDrive/Desktop/VS-Code Uni/Python/Skriptsprachen/Maps/Tiled-Map.tmx"):
@@ -82,7 +83,11 @@ class Spiel:
                                 self.screen.blit(scaled_image, (screen_x, screen_y))
                     except Exception as e:
                         print(f"Fehler beim Zeichnen des Layers {getattr(layer, 'name', 'unbekannt')}: {e}")
-                        
+
+            # Schatten für den Spieler zeichnen
+            for sprite in self.player_group:
+                sprite.draw_shadow(self.screen, offset, self.zoom)
+
             # Spieler updaten und zeichnen
             keys = pygame.key.get_pressed()
             dt = self.clock.get_time()
@@ -116,5 +121,12 @@ class Spiel:
 
 # Spiel starten
 if __name__ == "__main__":
+    pygame.init()
+    screen = pygame.display.set_mode((1280, 800))
+
+    #Menü 
+    menu = Menu(screen)
+    menu.run()
+
     spiel = Spiel()
     spiel.run()

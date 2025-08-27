@@ -39,6 +39,23 @@ class Player(pygame.sprite.Sprite):
                 frames[dir].append(image)
         return frames
 
+    def draw_shadow(self, surface, offset, zoom):
+        shadow_w = int(self.rect.width * 0.7 * zoom)
+        shadow_h = int(self.rect.height * 0.25 * zoom)
+        shadow_surface = pygame.Surface((shadow_w, shadow_h), pygame.SRCALPHA)
+        pygame.draw.ellipse(shadow_surface, (0, 0, 0, 90), shadow_surface.get_rect())
+
+        # Position unter den Füßen
+        screen_x = (self.rect.centerx - offset[0]) * zoom - shadow_w // 2
+        screen_y = (self.rect.bottom - offset[1]) * zoom - shadow_h // 2 + 5
+
+        surface.blit(shadow_surface, (screen_x, screen_y))
+
+    def draw(self,surface):
+        self.draw_shadow(surface)
+        surface.blit(self.image, self.rect)
+    
+
     def update(self, keys, dt):
         dx, dy = 0, 0
         if keys[pygame.K_w]:

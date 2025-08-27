@@ -25,22 +25,29 @@ class Button:
                 self.action()
         
         else:
-            pygame.draw.rect(screen, WHITE, self.rect)
+            self.color = self.color_inactive
+
+        pygame.draw.rect(screen, self.color, self.rect, border_radius=8)
+
+        text_surf = self.font.render(self.text, True, WHITE)
+        text_rect = text_surf.get_rect(center=self.rect.center)
+        screen.blit(text_surf, text_rect)
 
 
 class Menu:
     def __init__(self, screen):
         self.screen = screen
+        self.running = True
         self.buttons = [
-            Button("Start Game", (640, 300), self.start_game),
-            Button("Quit", (640, 400), self.quit_game)
+            Button("Start Game", 640, 300, 300, 60, self.start_game),
+            Button("Quit", 640, 400, 300, 60, self.quit_game)
         ]
         pygame.display.set_caption("DUNGEON CRAWLER")
-        pygame.display.set_mode((1280, 800))
         self.font = pygame.font.Font(None, 74)
     
     def start_game(self):
         print("Starting game...")
+        self.running = False
 
     def quit_game(self):
         pygame.quit()
@@ -54,6 +61,9 @@ class Menu:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+            title_surf = self.font.render("DUNGEON CRAWLER", True, WHITE)
+            title_rect = title_surf.get_rect(center=(640, 100))
+            self.screen.blit(title_surf, title_rect)
             
             for button in self.buttons:
                 button.draw(self.screen)
