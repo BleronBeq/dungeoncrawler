@@ -14,10 +14,7 @@ class Spiel:
         self.clock = pygame.time.Clock()
         self.map_path = map_path
         self.load_map(self.map_path)
-        self.health_bar = HealthBar(10, 10, 200, 20, max_health=100)
-        self.health_bar.update(self.player.health)
-        self.health_bar.draw(self.screen)
-
+        self.health_bar = HealthBar(x=10,y=10,max_health=10,full_heart_path="C:/Users/Admin/OneDrive/Desktop/VS-Code Uni/Python/Skriptsprachen/Sprites/full_heart.png",half_heart_path="C:/Users/Admin/OneDrive/Desktop/VS-Code Uni/Python/Skriptsprachen/Sprites/half_heart.png",empty_heart_path="C:/Users/Admin/OneDrive/Desktop/VS-Code Uni/Python/Skriptsprachen/Sprites/empty_heart.png",spacing=5,heart_size=(32, 32))
     def load_map(self, path):
         self.tmx_data = load_pygame(path)
         # Kollisionstiles sammeln
@@ -38,7 +35,7 @@ class Spiel:
 
         self.player = Player(spawn_x, spawn_y, self.collision_tiles, self.tmx_data.tilewidth, self.tmx_data.tileheight)
         self.player_group = pygame.sprite.Group(self.player)
-        self.kamera = Kamera(self.player)
+        self.kamera = Kamera(self.player, 1280, 800, self.zoom)
 
         # Exits sammeln (Objektgruppe "exit")
         self.exits = []
@@ -64,9 +61,9 @@ class Spiel:
                     pygame.quit()
                     sys.exit()
 
-            self.screen.fill((0, 0, 0))
+            self.screen.fill((12, 19, 23))
             self.kamera.update()
-            offset = self.kamera.camera.topleft
+            offset = self.kamera.offset
             # Tile-Layer zeichnen
             for layer in self.tmx_data.visible_layers:
                 if layer.__class__.__name__ == "TiledTileLayer":
@@ -76,7 +73,8 @@ class Spiel:
                             if image:
                                 scaled_image = pygame.transform.scale(
                                     image,
-                                    (int(self.tmx_data.tilewidth * self.zoom), int(self.tmx_data.tileheight * self.zoom))
+                                    (int(self.tmx_data.tilewidth * self.zoom), 
+                                     int(self.tmx_data.tileheight * self.zoom))
                                 )
                                 screen_x = (x * self.tmx_data.tilewidth - offset[0]) * self.zoom
                                 screen_y = (y * self.tmx_data.tileheight - offset[1]) * self.zoom
@@ -97,9 +95,10 @@ class Spiel:
                     sprite.image,
                     (int(sprite.rect.width * self.zoom), int(sprite.rect.height * self.zoom))
                 )
+                screen_x, screen_y = self.kamera.apply((sprite.rect.x, sprite.rect.y))
                 self.screen.blit(
                     scaled_sprite,
-                    ((sprite.rect.x - offset[0]) * self.zoom, (sprite.rect.y - offset[1]) * self.zoom)
+                    (screen_x * self.zoom, screen_y * self.zoom)
                 )
             
             # HealthBar
