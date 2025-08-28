@@ -1,11 +1,10 @@
 import pygame, sys
 from settings import AssetLoader
 from Spieler import Player
-from pytmx.util_pygame import load_pygame
 from Kamera import *
 from ui import HealthBar
 from menu import Menu
-import os
+from map import TileMap
 
 class Spiel:
     def __init__(self):
@@ -15,54 +14,33 @@ class Spiel:
         self.screen = pygame.display.set_mode((1280, 800))
         self.clock = pygame.time.Clock()
 
-        #Assetloader
+        # Assetloader
         self.loader = AssetLoader(scale=(32, 32))
 
-        # Map-Laden
+        # Map-Manager
+        self.tilemap = TileMap()
+
+        # Map laden
         self.map_path = self.loader.get_path("Maps", "Tiled-Map.tmx")
         self.load_map(self.map_path)
 
-        #Healthbar
-        self.health_bar = HealthBar(x=10,y=10,max_health=20,spacing=5,heart_size=(32, 32))
-    
+        # Healthbar
+        self.health_bar = HealthBar(x=10, y=10, max_health=20, spacing=5, heart_size=(32, 32))
+
     def load_map(self, path):
-        self.tmx_data = load_pygame(path)
-        # Kollisionstiles sammeln
-        self.collision_tiles = set()
-        for layer in self.tmx_data.visible_layers:
-            if hasattr(layer, '__iter__') and getattr(layer, 'name', '') == 'Wände':
-                for x, y, gid in layer:
-                    if gid != 0:
-                        self.collision_tiles.add((x, y))
+        # Mapdaten laden
+        self.tilemap.load(path)
 
-        # Spawn suchen
-        spawn_x, spawn_y = 100, 100
-        for layer in self.tmx_data.layers:
-            if getattr(layer, 'name', '') == "playerSpawn":
-                for obj in layer:
-                    spawn_x, spawn_y = obj.x, obj.y
-                    break
-
-        self.player = Player(spawn_x, spawn_y, self.collision_tiles, self.tmx_data.tilewidth, self.tmx_data.tileheight)
+        # Player erstellen (Spawn aus TileMap)
+        spawn_x, spawn_y = self.tilemap.spawn
+        self.player = Player(spawn_x, spawn_y, self.tilemap.collision_tiles, self.tilemap.tilewidth, self.tilemap.tileheight)
         self.player_group = pygame.sprite.Group(self.player)
+
+        # Kamera
         self.kamera = Kamera(self.player, 1280, 800, self.zoom)
 
-        # Exits sammeln (Objektgruppe "exit")
-        self.exits = []
-        for layer in self.tmx_data.layers:
-            if getattr(layer, 'name', '') == "exit":
-                for obj in layer:
-                    next_map = None
-                    for prop in getattr(obj, 'properties', {}):
-                        if prop == "nextMap":
-                            next_map = obj.properties[prop]
-                            if next_map:
-                                import os
-                                next_map = os.path.join(os.path.dirname(path), next_map)
-                    self.exits.append({
-                        "rect": pygame.Rect(obj.x, obj.y, obj.width, obj.height),
-                        "nextMap": next_map
-                    })
+        # Exits referenzieren
+        self.exits = self.tilemap.exits
 
     def run(self):
         while True:
@@ -73,26 +51,12 @@ class Spiel:
 
             self.screen.fill((12, 19, 23))
             self.kamera.update()
-            offset = self.kamera.offset
-            # Tile-Layer zeichnen
-            for layer in self.tmx_data.visible_layers:
-                if layer.__class__.__name__ == "TiledTileLayer":
-                    try:
-                        for x, y, gid in layer:
-                            image = self.tmx_data.get_tile_image_by_gid(gid)
-                            if image:
-                                scaled_image = pygame.transform.scale(
-                                    image,
-                                    (int(self.tmx_data.tilewidth * self.zoom), 
-                                     int(self.tmx_data.tileheight * self.zoom))
-                                )
-                                screen_x = (x * self.tmx_data.tilewidth - offset[0]) * self.zoom
-                                screen_y = (y * self.tmx_data.tileheight - offset[1]) * self.zoom
-                                self.screen.blit(scaled_image, (screen_x, screen_y))
-                    except Exception as e:
-                        print(f"Fehler beim Zeichnen des Layers {getattr(layer, 'name', 'unbekannt')}: {e}")
+
+            # Tile-Layer zeichnen (über TileMap)
+            self.tilemap.draw(self.screen, self.kamera, self.zoom)
 
             # Schatten für den Spieler zeichnen
+            offset = self.kamera.offset
             for sprite in self.player_group:
                 sprite.draw_shadow(self.screen, offset, self.zoom)
 
@@ -110,11 +74,11 @@ class Spiel:
                     scaled_sprite,
                     (screen_x * self.zoom, screen_y * self.zoom)
                 )
-            
+
             # HealthBar
             self.health_bar.update(self.player.health)
             self.health_bar.draw(self.screen)
-            
+
             # Exit-Check
             player_rect = self.player.rect
             for exit_obj in self.exits:
@@ -124,7 +88,7 @@ class Spiel:
                         if exit_obj["nextMap"]:
                             self.load_map(exit_obj["nextMap"])
                             break
-            
+
             pygame.display.flip()
             self.clock.tick(60)
 
@@ -133,7 +97,7 @@ if __name__ == "__main__":
     pygame.init()
     screen = pygame.display.set_mode((1280, 800))
 
-    #Menü 
+    # Menü
     menu = Menu(screen)
     menu.run()
 
