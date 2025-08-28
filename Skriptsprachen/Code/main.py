@@ -1,20 +1,30 @@
 import pygame, sys
+from settings import AssetLoader
 from Spieler import Player
 from pytmx.util_pygame import load_pygame
 from Kamera import *
 from ui import HealthBar
 from menu import Menu
+import os
 
 class Spiel:
-    def __init__(self, map_path="C:/Users/Admin/OneDrive/Desktop/VS-Code Uni/Python/Skriptsprachen/Maps/Tiled-Map.tmx"):
+    def __init__(self):
         pygame.init()
         pygame.display.set_caption("Dungeon Crawler")
         self.zoom = 1.5
         self.screen = pygame.display.set_mode((1280, 800))
         self.clock = pygame.time.Clock()
-        self.map_path = map_path
+
+        #Assetloader
+        self.loader = AssetLoader(scale=(32, 32))
+
+        # Map-Laden
+        self.map_path = self.loader.get_path("Maps", "Tiled-Map.tmx")
         self.load_map(self.map_path)
-        self.health_bar = HealthBar(x=10,y=10,max_health=10,full_heart_path="C:/Users/Admin/OneDrive/Desktop/VS-Code Uni/Python/Skriptsprachen/Sprites/full_heart.png",half_heart_path="C:/Users/Admin/OneDrive/Desktop/VS-Code Uni/Python/Skriptsprachen/Sprites/half_heart.png",empty_heart_path="C:/Users/Admin/OneDrive/Desktop/VS-Code Uni/Python/Skriptsprachen/Sprites/empty_heart.png",spacing=5,heart_size=(32, 32))
+
+        #Healthbar
+        self.health_bar = HealthBar(x=10,y=10,max_health=20,spacing=5,heart_size=(32, 32))
+    
     def load_map(self, path):
         self.tmx_data = load_pygame(path)
         # Kollisionstiles sammeln

@@ -1,11 +1,13 @@
 import pygame
 import math
 from ui import HealthBar
+from settings import AssetLoader
 #Spielerfigur
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, collision_tiles, tilewidth, tileheight):
         super().__init__()
-        self.sprite_sheet = pygame.image.load("C:/Users/Admin/OneDrive/Desktop/VS-Code Uni/Python/Skriptsprachen/Sprites/Player.png").convert_alpha()
+        loader = AssetLoader()
+        self.sprite_sheet = loader.load_image("Sprites", "Player.png")
         self.frames = self.load_frames()
         self.direction = "down"
         self.anim_index = 0
