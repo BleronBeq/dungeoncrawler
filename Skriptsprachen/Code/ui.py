@@ -1,5 +1,3 @@
-# ui.py
-
 from settings import AssetLoader
 
 class HealthBar:

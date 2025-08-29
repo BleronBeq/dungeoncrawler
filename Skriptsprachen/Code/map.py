@@ -11,18 +11,55 @@ class TileMap:
         self.tilewidth = 0
         self.tileheight = 0
 
+        # Türen/Schlüssel-States
+        self.door_tiles = set()    
+        self.key_tiles = set()     
+        self.open_doors = set()    
+        self.collected_keys = set()
+        self.door_rects = {}       
+        self.key_rects = {}        
+
     def load(self, path: str):
         self.tmx_data = load_pygame(path)
         self.tilewidth = self.tmx_data.tilewidth
         self.tileheight = self.tmx_data.tileheight
 
-        # Kollisionstiles
+        # Reset States
         self.collision_tiles.clear()
+        self.door_tiles.clear()
+        self.key_tiles.clear()
+        self.open_doors.clear()
+        self.collected_keys.clear()
+        self.door_rects.clear()
+        self.key_rects.clear()
+
+        # Kollisionstiles (Wände + Türen)
         for layer in self.tmx_data.visible_layers:
-            if hasattr(layer, '__iter__') and getattr(layer, 'name', '') == 'Wände':
-                for x, y, gid in layer:
-                    if gid != 0:
-                        self.collision_tiles.add((x, y))
+            if layer.__class__.__name__ == "TiledTileLayer":
+                lname = getattr(layer, 'name', '')
+                if lname in ('Wände', 'Türen'):
+                    for x, y, gid in layer:
+                        if gid != 0:
+                            self.collision_tiles.add((x, y))
+
+        # Türen und Schlüssel Tile-Positionen/Rects erfassen
+        for layer in self.tmx_data.layers:
+            if layer.__class__.__name__ == "TiledTileLayer":
+                lname = getattr(layer, 'name', '')
+                if lname == 'Türen':
+                    for x, y, gid in layer:
+                        if gid != 0:
+                            self.door_tiles.add((x, y))
+                            self.door_rects[(x, y)] = pygame.Rect(
+                                x * self.tilewidth, y * self.tileheight, self.tilewidth, self.tileheight
+                            )
+                elif lname == 'Schlüssel':
+                    for x, y, gid in layer:
+                        if gid != 0:
+                            self.key_tiles.add((x, y))
+                            self.key_rects[(x, y)] = pygame.Rect(
+                                x * self.tilewidth, y * self.tileheight, self.tilewidth, self.tileheight
+                            )
 
         # Spawn
         spawn_x, spawn_y = 100, 100
@@ -47,16 +84,35 @@ class TileMap:
                         "nextMap": next_map
                     })
 
+    def open_door(self, pos):
+        # Tür öffnen: nicht mehr zeichnen, nicht mehr kollidieren
+        if pos in self.door_tiles and pos not in self.open_doors:
+            self.open_doors.add(pos)
+            if pos in self.collision_tiles:
+                self.collision_tiles.discard(pos)
+
+    def collect_key(self, pos):
+        # Schlüssel einsammeln: nicht mehr zeichnen
+        if pos in self.key_tiles and pos not in self.collected_keys:
+            self.collected_keys.add(pos)
+
     def draw(self, screen: pygame.Surface, kamera, zoom: float):
         if not self.tmx_data:
             return
         offset_x, offset_y = kamera.offset
         for layer in self.tmx_data.visible_layers:
             if layer.__class__.__name__ == "TiledTileLayer":
+                lname = getattr(layer, 'name', '')
                 try:
                     for x, y, gid in layer:
                         if gid == 0:
                             continue
+                        # Sichtbarkeit
+                        if lname == 'Türen' and (x, y) in self.open_doors:
+                            continue
+                        if lname == 'Schlüssel' and (x, y) in self.collected_keys:
+                            continue
+
                         image = self.tmx_data.get_tile_image_by_gid(gid)
                         if not image:
                             continue
@@ -67,4 +123,4 @@ class TileMap:
                         screen_y = (y * self.tileheight - offset_y) * zoom
                         screen.blit(scaled, (screen_x, screen_y))
                 except Exception as e:
-                    print(f"Fehler beim Zeichnen des Layers {getattr(layer, 'name', 'unbekannt')}: {e}")
+                    print(f"Fehler beim Zeichnen des Layers {lname or 'unbekannt'}: {e}")

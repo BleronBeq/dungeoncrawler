@@ -5,6 +5,7 @@ from Kamera import *
 from ui import HealthBar
 from menu import Menu
 from map import TileMap
+from items import ItemsManager
 
 class Spiel:
     def __init__(self):
@@ -42,6 +43,9 @@ class Spiel:
         # Exits referenzieren
         self.exits = self.tilemap.exits
 
+        # Items/Türen-Manager
+        self.items = ItemsManager(self.tilemap)
+
     def run(self):
         while True:
             for event in pygame.event.get():
@@ -49,10 +53,20 @@ class Spiel:
                     pygame.quit()
                     sys.exit()
 
-            self.screen.fill((12, 19, 23))
+            keys = pygame.key.get_pressed()
+            dt = self.clock.get_time()
+
+            # Spieler-Update
+            self.player_group.update(keys, dt)
+
+            # Items/Türen-Logik
+            self.items.update(keys, self.player.rect)
+
+            # Kamera
             self.kamera.update()
 
-            # Tile-Layer zeichnen (über TileMap)
+            # Zeichnen
+            self.screen.fill((12, 19, 23))
             self.tilemap.draw(self.screen, self.kamera, self.zoom)
 
             # Schatten für den Spieler zeichnen
@@ -60,10 +74,7 @@ class Spiel:
             for sprite in self.player_group:
                 sprite.draw_shadow(self.screen, offset, self.zoom)
 
-            # Spieler updaten und zeichnen
-            keys = pygame.key.get_pressed()
-            dt = self.clock.get_time()
-            self.player_group.update(keys, dt)
+            # Spieler zeichnen
             for sprite in self.player_group:
                 scaled_sprite = pygame.transform.scale(
                     sprite.image,
@@ -78,6 +89,9 @@ class Spiel:
             # HealthBar
             self.health_bar.update(self.player.health)
             self.health_bar.draw(self.screen)
+
+            # Schlüsselanzahl anzeigen
+            self.items.draw_key_ui(self.screen)
 
             # Exit-Check
             player_rect = self.player.rect
