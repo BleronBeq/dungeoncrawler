@@ -44,7 +44,7 @@ class Spiel:
         self.exits = self.tilemap.exits
 
         # Items/Türen-Manager
-        self.items = ItemsManager(self.tilemap)
+        self.items = ItemsManager(self.tilemap, self.player)
 
     def run(self):
         while True:
@@ -60,7 +60,7 @@ class Spiel:
             self.player_group.update(keys, dt)
 
             # Items/Türen-Logik
-            self.items.update(keys, self.player.rect)
+            self.items.update(keys, self.player.rect, pygame.mouse.get_pos())
 
             # Kamera
             self.kamera.update()
@@ -85,6 +85,9 @@ class Spiel:
                     scaled_sprite,
                     (screen_x * self.zoom, screen_y * self.zoom)
                 )
+
+            # Schwert 
+            self.items.draw_sword(self.screen, self.kamera, self.zoom)
 
             # HealthBar
             self.health_bar.update(self.player.health)

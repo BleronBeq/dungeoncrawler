@@ -1,12 +1,14 @@
 import pygame
 from settings import AssetLoader
-
+from math import atan2, degrees
 class ItemsManager:
 
-    def __init__(self, tilemap):
+    def __init__(self, tilemap, player):
         self.set_map(tilemap)
         self.key_count = 0
         self._prev_e_pressed = False
+
+        self.sword = Sword(player, scale = 0.75)
 
     def set_map(self, tilemap):
         self.tilemap = tilemap
@@ -17,20 +19,20 @@ class ItemsManager:
         self._key_icon_placeholder = None
 
         try:
-            loader = AssetLoader(scale=(48,48))
-            self._key_icon_placeholder = loader.load_image("Maps", "key_placeholder.png")
+            loader = AssetLoader(scale=(32,32))
+            self._key_icon_placeholder = loader.load_image("Sprites", "key_placeholder.png")
         except Exception:
             self._key_icon_placeholder = None
 
         try:
             loader = AssetLoader(scale=(48, 48))
-            self._key_icon = loader.load_image("Maps", "key.png")
+            self._key_icon = loader.load_image("Sprites", "key.png")
         except Exception:
             self._key_icon = None
 
         self._ui_font = pygame.font.SysFont(None, 22)
 
-    def update(self, keys, player_rect):
+    def update(self, keys, player_rect, mouse_pos):
         for pos, rect in list(self.tilemap.key_rects.items()):
             if pos in self.tilemap.collected_keys:
                 continue
@@ -53,6 +55,15 @@ class ItemsManager:
                     self.key_count -= 1
                     break
 
+        # Schwert 
+        if keys[pygame.K_SPACE]:
+            self.sword.attack()
+        self.sword.rotate_sword(mouse_pos)
+        self.sword.update()
+
+    def draw_sword(self, surface, kamera=None, zoom=1.0):
+        self.sword.draw(surface, kamera, zoom)
+
     def draw_key_ui(self, surface, margin=(10, 10), color=(240, 240, 240)):
 
         icon = self._key_icon if self.key_count > 0 else self._key_icon_placeholder
@@ -64,13 +75,86 @@ class ItemsManager:
         x = surface.get_width() - icon.get_width() - margin[0]
         y = margin[1]
         surface.blit(icon, (x, y))
-        # Anzahl nur anzeigen, wenn >1
-        #if self.key_count > 1:
-        #    txt = self._ui_font.render(f"x{self.key_count}", True, color)
-        #    surface.blit(txt, (x - txt.get_width() - 6, y + (icon.get_height() - txt.get_height()) // 2))
 
-    #def draw_ui(self, surface, font=None, pos=(10, 50), color=(240, 240, 240)):
-    #    if font is None:
-    #        font = pygame.font.SysFont(None, 22)
-    #    txt = font.render(f"Schlüssel: {self.key_count}", True, color)
-    #    surface.blit(txt, pos)
+class Sword(pygame.sprite.Sprite):
+    def __init__(self, player, offset_radius=0, scale = 0.75):
+        super().__init__()
+        self.player = player
+        self.render_scale = scale
+        loader = AssetLoader()
+        self.sprite_sheet = loader.load_image("Sprites", "sword.png")
+
+        sheet_width, sheet_height = self.sprite_sheet.get_size()
+        self.frame_width = sheet_width
+        self.frame_height = sheet_height // 5
+        self.num_frames = 5
+
+        self.frames = []
+        for i in range(self.num_frames):
+            rect = pygame.Rect(0, i * self.frame_height, self.frame_width, self.frame_height)
+            frame = self.sprite_sheet.subsurface(rect)
+            # Schwert-Bild
+            frame_centered = pygame.Surface((self.frame_width, self.frame_height), pygame.SRCALPHA)
+            frame_centered.blit(frame, (-0, 0)) 
+            self.frames.append(frame_centered)
+
+        self.index = 0
+        self.image = self.frames[self.index]
+        self.rect = self.image.get_rect(center=self.player.rect.center)
+
+        self.attacking = False
+        self.counter = 0
+        self.animation_speed = 5
+        self.angle = 0
+
+        # Abstand, wie weit das Schwert neben dem Spieler sitzen soll
+        self.offset_radius = offset_radius or (max(self.player.rect.width, self.player.rect.height) // 1 + 10)
+        # Blickrichtung-Einheitsvektor
+        self.look_dir = pygame.Vector2(1, 0)
+
+    def attack(self):
+        if not self.attacking:
+            self.attacking = True
+            self.index = 0
+            self.counter = 0
+
+    def rotate_sword(self, mouse_pos):
+        # Winkel von Spieler zur Maus
+        direction = pygame.Vector2(mouse_pos) - pygame.Vector2(self.player.rect.center)
+        if direction.length_squared() == 0:
+            direction = pygame.Vector2(1, 0)
+        else:
+            direction = direction.normalize()
+        self.look_dir = direction
+        self.angle = degrees(atan2(-direction.y, direction.x))
+
+    def update(self):
+        # Animation
+        if self.attacking:
+            self.counter += 1
+            if self.counter >= self.animation_speed:
+                self.counter = 0
+                self.index += 1
+                if self.index >= self.num_frames:
+                    self.index = 0
+                    self.attacking = False
+
+        # Rotation
+        self.image = pygame.transform.rotozoom(self.frames[self.index], self.angle, self.render_scale)
+        target_center = pygame.Vector2(self.player.rect.center) + self.look_dir * self.offset_radius
+        self.rect = self.image.get_rect(center=(int(target_center.x), int(target_center.y)))
+
+    def draw(self, surface, kamera=None, zoom=1.0):
+        if zoom != 1.0:
+            scaled = pygame.transform.scale(
+                self.image,
+                (int(self.rect.width * zoom), int(self.rect.height * zoom))
+            )
+        else:
+            scaled = self.image
+
+        if kamera is not None:
+            screen_x, screen_y = kamera.apply((self.rect.x, self.rect.y))
+            surface.blit(scaled, (screen_x * zoom, screen_y * zoom))
+        else:
+            surface.blit(scaled, self.rect.topleft)

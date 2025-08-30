@@ -10,7 +10,7 @@
  <tileset firstgid="492" name="items" tilewidth="32" tileheight="32" tilecount="286" columns="11">
   <image source="items.png" width="352" height="832"/>
  </tileset>
- <layer id="12" name="Boden" width="30" height="30" locked="1">
+ <layer id="12" name="Boden" width="30" height="30">
   <data encoding="csv">
 103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,
 103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,
