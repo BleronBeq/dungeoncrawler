@@ -1,6 +1,6 @@
 import pygame, sys
 from settings import AssetLoader
-from Spieler import Player
+from sprites import Player, Enemy
 from Kamera import *
 from ui import HealthBar
 from menu import Menu
@@ -37,6 +37,12 @@ class Spiel:
         self.player = Player(spawn_x, spawn_y, self.tilemap.collision_tiles, self.tilemap.tilewidth, self.tilemap.tileheight)
         self.player_group = pygame.sprite.Group(self.player)
 
+        # Gegner erstellen
+        self.enemy_group = pygame.sprite.Group()
+        for (enemy_x, enemy_y) in self.tilemap.enemy_spawns:
+            enemy = Enemy((enemy_x, enemy_y),self.player,self.tilemap.collision_tiles,self.tilemap.tilewidth,self.tilemap.tileheight)
+            self.enemy_group.add(enemy)
+
         # Kamera
         self.kamera = Kamera(self.player, 1280, 800, self.zoom)
 
@@ -59,6 +65,9 @@ class Spiel:
             # Spieler-Update
             self.player_group.update(keys, dt)
 
+            # Gegner-Update
+            self.enemy_group.update(dt)
+
             # Items/Türen-Logik
             self.items.update(keys, self.player.rect, pygame.mouse.get_pos())
 
@@ -76,6 +85,18 @@ class Spiel:
 
             # Spieler zeichnen
             for sprite in self.player_group:
+                scaled_sprite = pygame.transform.scale(
+                    sprite.image,
+                    (int(sprite.rect.width * self.zoom), int(sprite.rect.height * self.zoom))
+                )
+                screen_x, screen_y = self.kamera.apply((sprite.rect.x, sprite.rect.y))
+                self.screen.blit(
+                    scaled_sprite,
+                    (screen_x * self.zoom, screen_y * self.zoom)
+                )
+
+            # Gegner zeichnen
+            for sprite in self.enemy_group:
                 scaled_sprite = pygame.transform.scale(
                     sprite.image,
                     (int(sprite.rect.width * self.zoom), int(sprite.rect.height * self.zoom))

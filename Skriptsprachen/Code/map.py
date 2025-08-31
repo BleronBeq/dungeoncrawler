@@ -11,6 +11,9 @@ class TileMap:
         self.tilewidth = 0
         self.tileheight = 0
 
+        # Gegner-Spawn
+        self.enemy_spawns = []
+
         # Türen/Schlüssel-States
         self.door_tiles = set()    
         self.key_tiles = set()     
@@ -69,6 +72,14 @@ class TileMap:
                     spawn_x, spawn_y = int(obj.x), int(obj.y)
                     break
         self.spawn = (spawn_x, spawn_y)
+
+        # Gegner-Spawn
+        self.enemy_spawns = []
+        for layer in self.tmx_data.layers:
+            if getattr(layer, 'name', '') == "enemySpawn":
+                for obj in layer:
+                    self.enemy_spawns.append((int(obj.x), int(obj.y)))
+                    break
 
         # Exits
         self.exits = []

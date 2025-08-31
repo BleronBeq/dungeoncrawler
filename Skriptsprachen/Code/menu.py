@@ -39,14 +39,14 @@ class Menu:
         self.screen = screen
         self.running = True
         self.buttons = [
-            Button("Start Game", 640, 300, 300, 60, self.start_game),
-            Button("Quit", 640, 400, 300, 60, self.quit_game)
+            Button("Spiel Starten", 640, 300, 350, 60, self.start_game),
+            Button("Beenden", 640, 400, 350, 60, self.quit_game)
         ]
         pygame.display.set_caption("DUNGEON CRAWLER")
         self.font = pygame.font.Font(None, 74)
     
     def start_game(self):
-        print("Starting game...")
+        print("Starte das Spiel...")
         self.running = False
 
     def quit_game(self):
