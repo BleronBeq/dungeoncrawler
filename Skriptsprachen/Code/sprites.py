@@ -1,4 +1,5 @@
 import pygame
+import random
 import math
 from ui import HealthBar
 from settings import AssetLoader
@@ -134,6 +135,13 @@ class Enemy(pygame.sprite.Sprite):
         self.attack_damage = 1
         self.attack_cooldown = 800
         self._attack_timer_ms = 0
+
+    def spawn_enemy(enemy_group, player, collision_tiles, tilewidth, tileheight, max_enemies=5,spawn_area=(200,200,800,600)):
+        while len(enemy_group) < max_enemies:
+            x = random.randint(spawn_area[0], spawn_area[0] + spawn_area[2])
+            y = random.randint(spawn_area[1], spawn_area[1] + spawn_area[3])
+            enemy = Enemy((x, y), player, collision_tiles, tilewidth, tileheight)
+            enemy_group.add(enemy)
 
     def animate(self, dt):
         frame_list = self.frames[self.direction_str]

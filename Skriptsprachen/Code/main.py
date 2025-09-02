@@ -1,6 +1,6 @@
 import pygame, sys
 from settings import AssetLoader
-from sprites import Player, Enemy
+from sprites import *
 from Kamera import *
 from ui import HealthBar
 from menu import Menu
@@ -24,6 +24,10 @@ class Spiel:
         # Map laden
         self.map_path = self.loader.get_path("Maps", "Tiled-Map.tmx")
         self.load_map(self.map_path)
+
+        self.max_enemies = 5 #max(1,len(self.tilemap.enemy_spawns))
+        self.respawn_cooldown_ms = 1500
+        self._respawn_timer_ms = 0
 
         # Healthbar
         self.health_bar = HealthBar(x=10, y=10, max_health=20, spacing=5, heart_size=(32, 32))
@@ -61,6 +65,25 @@ class Spiel:
 
             keys = pygame.key.get_pressed()
             dt = self.clock.get_time()
+
+            # Gegner spawnen (Dauerloop)
+            #Enemy.spawn_enemy(self.enemy_group, self.player, self.tilemap.collision_tiles, self.tilemap.tilewidth, self.tilemap.tileheight, max_enemies=8)
+
+            # Respawn nur von Tiled-Spawnpunkten
+            self._respawn_timer_ms = max(0, self._respawn_timer_ms - dt)
+            if self._respawn_timer_ms == 0 and len(self.enemy_group) < self.max_enemies:
+                if self.tilemap.enemy_spawns:
+                    sx, sy = random.choice(self.tilemap.enemy_spawns)  # wähle einen Tiled-Spawnpunkt
+                    enemy = Enemy(
+                        (sx, sy),
+                        self.player,
+                        self.tilemap.collision_tiles,
+                        self.tilemap.tilewidth,
+                        self.tilemap.tileheight
+                    )
+                    self.enemy_group.add(enemy)
+                self._respawn_timer_ms = self.respawn_cooldown_ms
+
 
             # Spieler-Update
             self.player_group.update(keys, dt)

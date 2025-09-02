@@ -79,7 +79,6 @@ class TileMap:
             if getattr(layer, 'name', '') == "enemySpawn":
                 for obj in layer:
                     self.enemy_spawns.append((int(obj.x), int(obj.y)))
-                    break
 
         # Exits
         self.exits = []
