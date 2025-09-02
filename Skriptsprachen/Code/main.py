@@ -50,7 +50,7 @@ class Spiel:
         self.exits = self.tilemap.exits
 
         # Items/Türen-Manager
-        self.items = ItemsManager(self.tilemap, self.player)
+        self.items = ItemsManager(self.tilemap, self.player, self.enemy_group)
 
     def run(self):
         while True:

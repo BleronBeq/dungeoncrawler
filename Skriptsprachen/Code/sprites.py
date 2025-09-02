@@ -20,14 +20,17 @@ class Player(pygame.sprite.Sprite):
         self.tileheight = tileheight
         self.pos_x = float(self.rect.x)
         self.pos_y = float(self.rect.y)
-        self.health = 100  # Aktuelle Gesundheit
-        self.max_health = 100  # Maximale Gesundheit
+        self.health = 20  # Aktuelle Gesundheit
+        self.max_health = 20  # Maximale Gesundheit
 
     def can_move(self, dx, dy):
         new_rect = self.rect.move(dx, dy)
         tile_x = new_rect.centerx // self.tilewidth
         tile_y = new_rect.centery // self.tileheight
         return (tile_x, tile_y) not in self.collision_tiles
+    
+    def take_damage(self,amount: int):
+        self.health = max(0, self.health - int(amount))
 
     def load_frames(self):
         directions = ["down", "left", "right", "up"] # Reihenfolge vom Spieler Sprite-Sheet
@@ -127,7 +130,10 @@ class Enemy(pygame.sprite.Sprite):
         self.tilewidth = tilewidth
         self.tileheight = tileheight
 
-        self.health = 50
+        self.health = 5
+        self.attack_damage = 1
+        self.attack_cooldown = 800
+        self._attack_timer_ms = 0
 
     def animate(self, dt):
         frame_list = self.frames[self.direction_str]
@@ -139,6 +145,18 @@ class Enemy(pygame.sprite.Sprite):
         tile_x = new_rect.centerx // self.tilewidth
         tile_y = new_rect.centery // self.tileheight
         return (tile_x, tile_y) not in self.collision_tiles
+    
+    def take_damage(self, amount: int):
+        self.health = max(0, self.health - int(amount))
+        if self.health == 0:
+            self.kill()
+
+    def attack_player(self, dt):
+        self._attack_timer_ms = max(0, self._attack_timer_ms - dt)
+        if self._attack_timer_ms == 0 and self.rect.colliderect(self.player.rect):
+            self.player.take_damage(self.attack_damage)
+            self._attack_timer_ms = self.attack_cooldown
+
 
     def load_frames(self, sheet, cols=5, rows=4, margin=0, spacing=0, trim=0):
         directions = ["down", "left", "right", "up"]
@@ -201,3 +219,4 @@ class Enemy(pygame.sprite.Sprite):
     def update(self, dt):
         self.move(dt)
         self.animate(dt)
+        self.attack_player(dt)

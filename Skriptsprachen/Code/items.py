@@ -3,12 +3,14 @@ from settings import AssetLoader
 from math import atan2, degrees
 class ItemsManager:
 
-    def __init__(self, tilemap, player):
+    def __init__(self, tilemap, player, enemies):
         self.set_map(tilemap)
         self.key_count = 0
         self._prev_e_pressed = False
 
-        self.sword = Sword(player, scale = 0.75)
+        self.enemies = enemies
+
+        self.sword = Sword(player, enemies, scale=0.75)
 
     def set_map(self, tilemap):
         self.tilemap = tilemap
@@ -77,9 +79,10 @@ class ItemsManager:
         surface.blit(icon, (x, y))
 
 class Sword(pygame.sprite.Sprite):
-    def __init__(self, player, offset_radius=0, scale = 0.75):
+    def __init__(self, player, enemies, offset_radius=0, scale=0.75):
         super().__init__()
         self.player = player
+        self.enemies = enemies
         self.render_scale = scale
         loader = AssetLoader()
         self.sprite_sheet = loader.load_image("Sprites", "sword.png")
@@ -107,6 +110,9 @@ class Sword(pygame.sprite.Sprite):
         self.animation_speed = 5
         self.angle = 0
 
+        self.damage = 2
+        self._already_hit_ids = set()
+
         # Abstand, wie weit das Schwert neben dem Spieler sitzen soll
         self.offset_radius = offset_radius or (max(self.player.rect.width, self.player.rect.height) // 1 + 10)
         # Blickrichtung-Einheitsvektor
@@ -117,6 +123,26 @@ class Sword(pygame.sprite.Sprite):
             self.attacking = True
             self.index = 0
             self.counter = 0
+            self._already_hit_ids.clear()
+
+    def damage_enemies(self):
+        if not self.attacking or self.enemies is None:
+            return
+        for enemy in list(self.enemies):
+            if hasattr(enemy, "rect") and self.rect.colliderect(enemy.rect):
+                eid = id(enemy)
+                if eid in getattr(self, "_already_hit_ids", set()):
+                    continue
+                if hasattr(enemy, "take_damage"):
+                    enemy.take_damage(self.damage)
+                else:
+                    enemy.health = max(0, getattr(enemy, "health", 0) - self.damage)
+                    if enemy.health <= 0 and hasattr(enemy, "kill"):
+                        enemy.kill()
+                if not hasattr(self, "_already_hit_ids"):
+                    self._already_hit_ids = set()
+                self._already_hit_ids.add(eid)
+
 
     def rotate_sword(self, mouse_pos):
         # Winkel von Spieler zur Maus
@@ -131,6 +157,7 @@ class Sword(pygame.sprite.Sprite):
     def update(self):
         # Animation
         if self.attacking:
+            self.damage_enemies()
             self.counter += 1
             if self.counter >= self.animation_speed:
                 self.counter = 0
