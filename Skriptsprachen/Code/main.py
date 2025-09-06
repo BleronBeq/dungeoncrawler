@@ -94,6 +94,14 @@ class Spiel:
             # Items/Türen-Logik
             self.items.update(keys, self.player.rect, pygame.mouse.get_pos())
 
+            # Tod-Erkennung
+            if getattr(self.player, "is_dead", False) or self.player.health <= 0:
+                menu = Menu(self.screen)
+                menu.game_over()
+                menu.return_to_menu()
+                self.load_map(self.map_path)
+                continue
+
             # Kamera
             self.kamera.update()
 

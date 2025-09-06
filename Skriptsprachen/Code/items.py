@@ -1,3 +1,4 @@
+from unittest import loader
 import pygame
 from settings import AssetLoader
 from math import atan2, degrees
@@ -9,8 +10,10 @@ class ItemsManager:
         self._prev_e_pressed = False
 
         self.enemies = enemies
-
         self.sword = Sword(player, enemies, scale=0.75)
+
+        self.door_sound = pygame.mixer.Sound("Audio/doorOpen.ogg")
+        self.door_sound.set_volume(0.5)
 
     def set_map(self, tilemap):
         self.tilemap = tilemap
@@ -55,6 +58,7 @@ class ItemsManager:
                     # Tür öffnen
                     self.tilemap.open_door(pos)
                     self.key_count -= 1
+                    self.door_sound.play()
                     break
 
         # Schwert 
@@ -86,6 +90,9 @@ class Sword(pygame.sprite.Sprite):
         self.render_scale = scale
         loader = AssetLoader()
         self.sprite_sheet = loader.load_image("Sprites", "sword.png")
+
+        self.attack_sound = pygame.mixer.Sound("Audio/swish_2.wav")
+        self.attack_sound.set_volume(0.5)
 
         sheet_width, sheet_height = self.sprite_sheet.get_size()
         self.frame_width = sheet_width
@@ -124,6 +131,8 @@ class Sword(pygame.sprite.Sprite):
             self.index = 0
             self.counter = 0
             self._already_hit_ids.clear()
+            if hasattr(self, "attack_sound"):
+                self.attack_sound.play()
 
     def damage_enemies(self):
         if not self.attacking or self.enemies is None:

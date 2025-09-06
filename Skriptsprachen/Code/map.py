@@ -94,13 +94,15 @@ class TileMap:
                         "nextMap": next_map
                     })
 
-    def open_door(self, pos):
+    def open_door(self, pos) -> bool:
         # Tür öffnen: nicht mehr zeichnen, nicht mehr kollidieren
         if pos in self.door_tiles and pos not in self.open_doors:
             self.open_doors.add(pos)
             if pos in self.collision_tiles:
                 self.collision_tiles.discard(pos)
-
+            return True
+        return False
+    
     def collect_key(self, pos):
         # Schlüssel einsammeln: nicht mehr zeichnen
         if pos in self.key_tiles and pos not in self.collected_keys:

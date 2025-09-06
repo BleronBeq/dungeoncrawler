@@ -24,6 +24,22 @@ class Player(pygame.sprite.Sprite):
         self.health = 20  # Aktuelle Gesundheit
         self.max_health = 20  # Maximale Gesundheit
 
+        self.is_dead = False
+
+        # Sound
+        self.step_sound = [
+            pygame.mixer.Sound("Audio/footstep_concrete1.ogg"),
+            pygame.mixer.Sound("Audio/footstep_concrete2.ogg"),
+            pygame.mixer.Sound("Audio/footstep_concrete3.ogg"),
+            pygame.mixer.Sound("Audio/footstep_concrete4.ogg"),
+            pygame.mixer.Sound("Audio/footstep_concrete5.ogg")
+            ]
+
+        for sound in self.step_sound:
+            sound.set_volume(0.5)
+
+        self.step_timer = 0
+
     def can_move(self, dx, dy):
         new_rect = self.rect.move(dx, dy)
         tile_x = new_rect.centerx // self.tilewidth
@@ -32,6 +48,8 @@ class Player(pygame.sprite.Sprite):
     
     def take_damage(self,amount: int):
         self.health = max(0, self.health - int(amount))
+        if self.health == 0:
+            self.is_dead = True
 
     def load_frames(self):
         directions = ["down", "left", "right", "up"] # Reihenfolge vom Spieler Sprite-Sheet
@@ -102,6 +120,11 @@ class Player(pygame.sprite.Sprite):
             if self.anim_timer > 150:
                 self.anim_index = (self.anim_index + 1) % 3
                 self.anim_timer = 0
+
+                self.step_timer += dt
+                if self.step_timer > 30:
+                    sound = random.choice(self.step_sound).play()
+                    self.step_timer = 0
         else:
             self.anim_index = 1 
 

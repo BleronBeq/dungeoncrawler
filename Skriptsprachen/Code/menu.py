@@ -70,5 +70,16 @@ class Menu:
             
             pygame.display.update()
             
+    def game_over(self):
+        self.screen.fill(BLACK)
+        game_over_font = pygame.font.Font(None, 100)
+        game_over_surf = game_over_font.render("YOU DIED", True, WHITE)
+        game_over_rect = game_over_surf.get_rect(center=(640, 360))
+        self.screen.blit(game_over_surf, game_over_rect)
+        pygame.display.flip()
+        pygame.time.delay(3000)
 
-
+    def return_to_menu(self):
+        
+        menu = Menu(self.screen)
+        menu.run()
