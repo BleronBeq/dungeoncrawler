@@ -14,6 +14,9 @@ class Button:
         self.color_inactive = (100, 100, 100)
         self.color_active = (200, 200, 200)
         self.color = self.color_inactive
+
+        self.click_sound = pygame.mixer.Sound("Audio/Spawn.mp3")
+        self.click_sound.set_volume(0.3)
     
     def draw(self, screen):
         mouse_pos = pygame.mouse.get_pos()
@@ -22,6 +25,7 @@ class Button:
         if self.rect.collidepoint(mouse_pos):
             self.color = self.color_active
             if click[0] == 1 and self.action is not None:
+                self.click_sound.play()
                 self.action()
         
         else:
@@ -44,9 +48,15 @@ class Menu:
         ]
         pygame.display.set_caption("DUNGEON CRAWLER")
         self.font = pygame.font.Font(None, 74)
+
+
+        pygame.mixer.music.load("Audio/EldenRingMenu.mp3")
+        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.play(-1)
     
     def start_game(self):
         print("Starte das Spiel...")
+        pygame.mixer.music.stop()
         self.running = False
 
     def quit_game(self):
@@ -76,6 +86,7 @@ class Menu:
         game_over_surf = game_over_font.render("YOU DIED", True, WHITE)
         game_over_rect = game_over_surf.get_rect(center=(640, 360))
         self.screen.blit(game_over_surf, game_over_rect)
+        pygame.mixer.music.stop()
         pygame.display.flip()
         pygame.time.delay(3000)
 

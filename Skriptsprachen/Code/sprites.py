@@ -38,6 +38,12 @@ class Player(pygame.sprite.Sprite):
         for sound in self.step_sound:
             sound.set_volume(0.5)
 
+        self.hit_sound = pygame.mixer.Sound("Audio/hit1.ogg")
+        self.hit_sound.set_volume(0.5)
+
+        self.death_sound = pygame.mixer.Sound("Audio/elden-ring-death.mp3")
+        self.death_sound.set_volume(0.5)
+
         self.step_timer = 0
 
     def can_move(self, dx, dy):
@@ -47,9 +53,14 @@ class Player(pygame.sprite.Sprite):
         return (tile_x, tile_y) not in self.collision_tiles
     
     def take_damage(self,amount: int):
+        if self.health > 0:
+            self.hit_sound.play()
+
         self.health = max(0, self.health - int(amount))
-        if self.health == 0:
+
+        if self.health == 0 and not self.is_dead:
             self.is_dead = True
+            self.death_sound.play()
 
     def load_frames(self):
         directions = ["down", "left", "right", "up"] # Reihenfolge vom Spieler Sprite-Sheet

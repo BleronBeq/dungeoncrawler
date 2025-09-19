@@ -92,7 +92,7 @@ class Spiel:
             self.enemy_group.update(dt)
 
             # Items/Türen-Logik
-            self.items.update(keys, self.player.rect, pygame.mouse.get_pos())
+            self.items.update(keys, self.player.rect, pygame.mouse.get_pos(), self.kamera, self.zoom)
 
             # Tod-Erkennung
             if getattr(self.player, "is_dead", False) or self.player.health <= 0:

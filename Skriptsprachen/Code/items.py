@@ -37,7 +37,7 @@ class ItemsManager:
 
         self._ui_font = pygame.font.SysFont(None, 22)
 
-    def update(self, keys, player_rect, mouse_pos):
+    def update(self, keys, player_rect, mouse_pos, kamera=None, zoom=1.0):
         for pos, rect in list(self.tilemap.key_rects.items()):
             if pos in self.tilemap.collected_keys:
                 continue
@@ -64,9 +64,19 @@ class ItemsManager:
         # Schwert 
         if keys[pygame.K_SPACE]:
             self.sword.attack()
-        self.sword.rotate_sword(mouse_pos)
-        self.sword.update()
+        
+        if kamera is not None:
+            mouse_world = (
+                mouse_pos[0] / max(zoom, 1e-6) + kamera.offset.x,
+                mouse_pos[1] / max(zoom, 1e-6) + kamera.offset.y
+            )
+        else:
+            mouse_world = mouse_pos
 
+
+        self.sword.rotate_sword(mouse_world)
+        self.sword.update()
+#
     def draw_sword(self, surface, kamera=None, zoom=1.0):
         self.sword.draw(surface, kamera, zoom)
 
@@ -83,7 +93,7 @@ class ItemsManager:
         surface.blit(icon, (x, y))
 
 class Sword(pygame.sprite.Sprite):
-    def __init__(self, player, enemies, offset_radius=0, scale=0.75):
+    def __init__(self, player, enemies, offset_radius=14, scale=0.70):
         super().__init__()
         self.player = player
         self.enemies = enemies
@@ -137,17 +147,25 @@ class Sword(pygame.sprite.Sprite):
     def damage_enemies(self):
         if not self.attacking or self.enemies is None:
             return
+        
         for enemy in list(self.enemies):
             if hasattr(enemy, "rect") and self.rect.colliderect(enemy.rect):
+
+                dist = pygame.Vector2(enemy.rect.center).distance_to(self.player.rect.center)
+                if dist > 80: # Reichweite
+                    continue
+
                 eid = id(enemy)
                 if eid in getattr(self, "_already_hit_ids", set()):
                     continue
+
                 if hasattr(enemy, "take_damage"):
                     enemy.take_damage(self.damage)
                 else:
                     enemy.health = max(0, getattr(enemy, "health", 0) - self.damage)
                     if enemy.health <= 0 and hasattr(enemy, "kill"):
                         enemy.kill()
+                
                 if not hasattr(self, "_already_hit_ids"):
                     self._already_hit_ids = set()
                 self._already_hit_ids.add(eid)
