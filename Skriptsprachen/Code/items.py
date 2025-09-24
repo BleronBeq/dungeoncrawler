@@ -15,6 +15,9 @@ class ItemsManager:
         self.door_sound = pygame.mixer.Sound("Audio/doorOpen.ogg")
         self.door_sound.set_volume(0.5)
 
+        self.key_sound = pygame.mixer.Sound("Audio/Key_Sound.mp3")
+        self.key_sound.set_volume(0.3)
+
     def set_map(self, tilemap):
         self.tilemap = tilemap
         self.key_count = 0
@@ -44,6 +47,7 @@ class ItemsManager:
             if player_rect.colliderect(rect):
                 self.tilemap.collect_key(pos)
                 self.key_count += 1
+                self.key_sound.play()
 
         e_pressed = keys[pygame.K_e]
         e_edge = e_pressed and not self._prev_e_pressed

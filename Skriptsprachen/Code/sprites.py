@@ -26,7 +26,7 @@ class Player(pygame.sprite.Sprite):
 
         self.is_dead = False
 
-        # Sound
+        # Sound Boden
         self.step_sound = [
             pygame.mixer.Sound("Audio/footstep_concrete1.ogg"),
             pygame.mixer.Sound("Audio/footstep_concrete2.ogg"),
@@ -46,7 +46,7 @@ class Player(pygame.sprite.Sprite):
 
         self.step_timer = 0
 
-    def can_move(self, dx, dy):
+    def can_move(self, dx, dy): # TODO: Kollision mit Wänden verändern.
         new_rect = self.rect.move(dx, dy)
         tile_x = new_rect.centerx // self.tilewidth
         tile_y = new_rect.centery // self.tileheight

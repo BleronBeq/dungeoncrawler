@@ -89,6 +89,16 @@ class Menu:
         pygame.mixer.music.stop()
         pygame.display.flip()
         pygame.time.delay(3000)
+    
+    def game_won(self):
+        self.screen.fill(BLACK)
+        finish_font = pygame.font.Font(None, 100)
+        finish_surf = finish_font.render("YOU WIN", True, WHITE)
+        finish_rect = finish_surf.get_rect(center=(640, 360))
+        self.screen.blit(finish_surf, finish_rect)
+        pygame.mixer.music.stop()
+        pygame.display.flip()
+        pygame.time.delay(3000)
 
     def return_to_menu(self):
         

@@ -262,14 +262,14 @@
   <object id="28" x="694" y="591.5" width="41.5" height="36.5"/>
   <object id="29" x="627.5" y="626.5" width="21" height="32"/>
  </objectgroup>
- <objectgroup id="21" name="exit" locked="1">
+ <objectgroup id="21" name="exit" visible="0">
   <object id="16" x="673" y="705" width="30" height="28">
    <properties>
     <property name="nextMap" value="Tiled-Map2.tmx"/>
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="16" name="playerSpawn" locked="1">
+ <objectgroup id="16" name="playerSpawn" visible="0">
   <object id="15" x="57" y="73" width="54" height="42">
    <properties>
     <property name="name = &quot;playerSpawn&quot;&#10;type = &quot;spawn&quot;&#10;" value=""/>

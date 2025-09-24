@@ -157,6 +157,12 @@ class Spiel:
                         if exit_obj["nextMap"]:
                             self.load_map(exit_obj["nextMap"])
                             break
+                        else:
+                            # Letzte Map erreicht = Spiel gewonnen
+                            menu = Menu(self.screen)
+                            menu.game_won()
+                            menu.return_to_menu()
+                            return
 
             pygame.display.flip()
             self.clock.tick(60)
