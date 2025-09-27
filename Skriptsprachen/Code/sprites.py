@@ -28,7 +28,7 @@ class Player(pygame.sprite.Sprite):
 
         # Sound Boden
         self.step_sound = [
-            pygame.mixer.Sound("Audio/footstep_concrete1.ogg"),
+            pygame.mixer.Sound("Audio/footstep_concrete1.ogg"), #Quelle von der Soundeffekte: https://kenney.itch.io/kenney-game-assets
             pygame.mixer.Sound("Audio/footstep_concrete2.ogg"),
             pygame.mixer.Sound("Audio/footstep_concrete3.ogg"),
             pygame.mixer.Sound("Audio/footstep_concrete4.ogg"),
@@ -38,10 +38,10 @@ class Player(pygame.sprite.Sprite):
         for sound in self.step_sound:
             sound.set_volume(0.5)
 
-        self.hit_sound = pygame.mixer.Sound("Audio/hit1.ogg")
+        self.hit_sound = pygame.mixer.Sound("Audio/hit1.ogg") #Quelle des Sounds: https://kenney.itch.io/kenney-game-assets
         self.hit_sound.set_volume(0.5)
 
-        self.death_sound = pygame.mixer.Sound("Audio/elden-ring-death.mp3")
+        self.death_sound = pygame.mixer.Sound("Audio/elden-ring-death.mp3") #Quelle des Sounds: https://www.youtube.com/@bond_factory/videos
         self.death_sound.set_volume(0.5)
 
         self.step_timer = 0
