@@ -222,7 +222,6 @@ class Enemy(pygame.sprite.Sprite):
 
                 rect = rect.clip(pygame.Rect(0, 0, total_w, total_h))
                 img = sheet.subsurface(rect).convert_alpha()
-                #img.set_colorkey((255, 0, 255))  # Magenta transparent
                 frames[dir_name].append(img)
         return frames
 
