@@ -73,7 +73,8 @@ class Player(pygame.sprite.Sprite):
                 image = self.sprite_sheet.subsurface(rect)
                 frames[dir].append(image)
         return frames
-
+    
+    # Schatten zeichnen unter dem Spieler
     def draw_shadow(self, surface, offset, zoom):
         shadow_w = int(self.rect.width * 0.7 * zoom)
         shadow_h = int(self.rect.height * 0.25 * zoom)
@@ -201,7 +202,7 @@ class Enemy(pygame.sprite.Sprite):
 
 
     def load_frames(self, sheet, cols=5, rows=4, margin=0, spacing=0, trim=0):
-        directions = ["down", "left", "right", "up"]
+        directions = ["down", "left", "right", "up"] # Reihenfolge vom Enemy Sprite-Sheet
         frames = {direction: [] for direction in directions}
 
         # Größe der Einzelbilder

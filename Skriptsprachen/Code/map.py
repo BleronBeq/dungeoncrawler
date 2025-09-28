@@ -22,6 +22,7 @@ class TileMap:
         self.door_rects = {}       
         self.key_rects = {}        
 
+    # Map laden
     def load(self, path: str):
         self.tmx_data = load_pygame(path)
         self.tilewidth = self.tmx_data.tilewidth

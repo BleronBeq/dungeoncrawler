@@ -32,8 +32,8 @@ class Spiel:
         # Healthbar
         self.health_bar = HealthBar(x=10, y=10, max_health=20, spacing=5, heart_size=(32, 32))
 
+    # Map laden
     def load_map(self, path):
-        # Mapdaten laden
         self.tilemap.load(path)
 
         # Player erstellen (Spawn aus TileMap)
@@ -66,9 +66,6 @@ class Spiel:
             keys = pygame.key.get_pressed()
             dt = self.clock.get_time()
 
-            # Gegner spawnen (Dauerloop)
-            #Enemy.spawn_enemy(self.enemy_group, self.player, self.tilemap.collision_tiles, self.tilemap.tilewidth, self.tilemap.tileheight, max_enemies=8)
-
             # Respawn nur von Tiled-Spawnpunkten
             self._respawn_timer_ms = max(0, self._respawn_timer_ms - dt)
             if self._respawn_timer_ms == 0 and len(self.enemy_group) < self.max_enemies:
@@ -83,7 +80,6 @@ class Spiel:
                     )
                     self.enemy_group.add(enemy)
                 self._respawn_timer_ms = self.respawn_cooldown_ms
-
 
             # Spieler-Update
             self.player_group.update(keys, dt)
@@ -138,7 +134,7 @@ class Spiel:
                     (screen_x * self.zoom, screen_y * self.zoom)
                 )
 
-            # Schwert 
+            # Schwert zeichnen
             self.items.draw_sword(self.screen, self.kamera, self.zoom)
 
             # HealthBar

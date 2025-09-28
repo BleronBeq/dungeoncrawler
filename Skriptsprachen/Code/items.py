@@ -65,7 +65,7 @@ class ItemsManager:
                     self.door_sound.play()
                     break
 
-        # Schwert 
+        # Schwert angriff
         if keys[pygame.K_SPACE]:
             self.sword.attack()
         
@@ -77,10 +77,10 @@ class ItemsManager:
         else:
             mouse_world = mouse_pos
 
-
+        # Schwert rotieren
         self.sword.rotate_sword(mouse_world)
         self.sword.update()
-#
+
     def draw_sword(self, surface, kamera=None, zoom=1.0):
         self.sword.draw(surface, kamera, zoom)
 
@@ -166,9 +166,9 @@ class Sword(pygame.sprite.Sprite):
                 if hasattr(enemy, "take_damage"):
                     enemy.take_damage(self.damage)
                 else:
-                    enemy.health = max(0, getattr(enemy, "health", 0) - self.damage)
+                    enemy.health = max(0, getattr(enemy, "health", 0) - self.damage) 
                     if enemy.health <= 0 and hasattr(enemy, "kill"):
-                        enemy.kill()
+                        enemy.kill() # Enemy entfernen, wenn Gesundheit 0
                 
                 if not hasattr(self, "_already_hit_ids"):
                     self._already_hit_ids = set()

@@ -4,7 +4,7 @@
  <tileset firstgid="443" name="items" tilewidth="32" tileheight="32" tilecount="286" columns="11">
   <image source="items.png" width="352" height="832"/>
  </tileset>
- <layer id="1" name="Boden" width="30" height="30">
+ <layer id="1" name="Boden" width="30" height="30" locked="1">
   <data encoding="csv">
 103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,
 103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,
@@ -38,7 +38,7 @@
 103,103,103,103,103,103,103,103,103,103,103,69,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103
 </data>
  </layer>
- <layer id="5" name="Gras &amp; Steine" width="30" height="30">
+ <layer id="5" name="Gras &amp; Steine" width="30" height="30" locked="1">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,428,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,428,0,0,0,0,0,0,0,0,0,0,105,0,0,326,326,326,105,0,0,0,0,428,0,0,0,
@@ -72,7 +72,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,280,336,0,0,106,0,0,0,0,0,0,336,0,0,0,0,0,0
 </data>
  </layer>
- <layer id="2" name="Wände" width="30" height="30">
+ <layer id="2" name="Wände" width="30" height="30" locked="1">
   <data encoding="csv">
 428,428,103,103,103,103,103,103,428,103,428,103,103,428,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,103,
 428,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,103,
@@ -106,7 +106,7 @@
 428,428,103,103,103,103,103,103,103,103,3221225542,103,280,103,3221225542,103,103,103,103,103,103,103,103,103,103,103,103,103,428,428
 </data>
  </layer>
- <layer id="6" name="Schlüssel" width="30" height="30">
+ <layer id="6" name="Schlüssel" width="30" height="30" locked="1">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,687,0,0,0,0,0,
@@ -140,7 +140,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer id="4" name="Tür_offen" width="30" height="30">
+ <layer id="4" name="Tür_offen" width="30" height="30" locked="1">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -174,7 +174,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer id="3" name="Türen" width="30" height="30">
+ <layer id="3" name="Türen" width="30" height="30" locked="1">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -208,7 +208,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="9" name="enemySpawn">
+ <objectgroup id="9" name="enemySpawn" locked="1">
   <object id="3" x="375.333" y="571.333" width="44" height="45.3333"/>
   <object id="4" x="466" y="668.667" width="35.3333" height="36"/>
   <object id="5" x="271.333" y="711.333" width="32" height="27.3333"/>
@@ -222,14 +222,14 @@
   <object id="13" x="228" y="66" width="42" height="44"/>
   <object id="14" x="172" y="212.667" width="38" height="32"/>
  </objectgroup>
- <objectgroup id="8" name="exit">
+ <objectgroup id="8" name="exit" locked="1">
   <object id="15" x="385.5" y="930.75" width="29.75" height="26">
    <properties>
     <property name="nextMap" value=""/>
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="7" name="playerSpawn">
+ <objectgroup id="7" name="playerSpawn" locked="1">
   <object id="1" x="370" y="355.333" width="63.3333" height="56.6667">
    <properties>
     <property name="spawnType" value="player"/>

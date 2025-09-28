@@ -23,8 +23,8 @@ class HealthBar:
         for i in range(max_slots):
             heart_x = self.x + i * (self.full_heart.get_width() + self.spacing)
             if i < full:
-                surface.blit(self.full_heart, (heart_x, self.y))
+                surface.blit(self.full_heart, (heart_x, self.y)) # voll
             elif i == full and half:
-                surface.blit(self.half_heart, (heart_x, self.y))
+                surface.blit(self.half_heart, (heart_x, self.y)) # halb
             else:
-                surface.blit(self.empty_heart, (heart_x, self.y))
+                surface.blit(self.empty_heart, (heart_x, self.y)) # leer
