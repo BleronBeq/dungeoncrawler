@@ -32,7 +32,6 @@ class Spiel:
         # Healthbar
         self.health_bar = HealthBar(x=10, y=10, max_health=20, spacing=5, heart_size=(32, 32))
 
-    # Map laden
     def load_map(self, path):
         self.tilemap.load(path)
 

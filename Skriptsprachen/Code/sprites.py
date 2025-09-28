@@ -147,7 +147,9 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, pos, player, collision_tiles, tilewidth, tileheight, speed=1.5):
         super().__init__()
         loader = AssetLoader()
-        enemy_sheet = loader.load_image("Sprites", "Enemy.png")
+        enemy_sheet = loader.load_image("Sprites", "Enemy.png").convert()
+        enemy_sheet.set_colorkey((255, 0, 255))  # Magenta transparent
+        enemy_sheet = enemy_sheet.convert_alpha()
         self.frames = self.load_frames(enemy_sheet, cols=5, rows=4, margin=0, spacing=0, trim=1)
         self.direction_str = "down"
         self.frames_index = 0.0
@@ -220,7 +222,7 @@ class Enemy(pygame.sprite.Sprite):
 
                 rect = rect.clip(pygame.Rect(0, 0, total_w, total_h))
                 img = sheet.subsurface(rect).convert_alpha()
-                img.set_colorkey((255, 0, 255))  # Magenta transparent
+                #img.set_colorkey((255, 0, 255))  # Magenta transparent
                 frames[dir_name].append(img)
         return frames
 
