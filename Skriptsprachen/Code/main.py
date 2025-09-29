@@ -25,7 +25,7 @@ class Spiel:
         self.map_path = self.loader.get_path("Maps", "Tiled-Map.tmx") # Standard-Map
         self.load_map(self.map_path)
 
-        self.max_enemies = 1 
+        self.max_enemies = 5
         self.respawn_cooldown_ms = 1500
         self._respawn_timer_ms = 0
 
