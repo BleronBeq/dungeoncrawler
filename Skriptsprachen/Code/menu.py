@@ -51,7 +51,7 @@ class Menu:
 
 
         pygame.mixer.music.load("Audio/EldenRingMenu.mp3")
-        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.set_volume(0.1)
         pygame.mixer.music.play(-1)
     
     def start_game(self):
@@ -80,6 +80,7 @@ class Menu:
             
             pygame.display.update()
             
+    # Screen nach Tod       
     def game_over(self):
         self.screen.fill(BLACK)
         game_over_font = pygame.font.Font(None, 100)
@@ -90,6 +91,7 @@ class Menu:
         pygame.display.flip()
         pygame.time.delay(3000)
     
+    # Screen nach Sieg
     def game_won(self):
         self.screen.fill(BLACK)
         finish_font = pygame.font.Font(None, 100)

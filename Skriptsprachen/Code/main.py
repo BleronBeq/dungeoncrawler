@@ -22,10 +22,10 @@ class Spiel:
         self.tilemap = TileMap()
 
         # Map laden
-        self.map_path = self.loader.get_path("Maps", "Tiled-Map.tmx")
+        self.map_path = self.loader.get_path("Maps", "Tiled-Map.tmx") # Standard-Map
         self.load_map(self.map_path)
 
-        self.max_enemies = 5 #max(1,len(self.tilemap.enemy_spawns))
+        self.max_enemies = 1 
         self.respawn_cooldown_ms = 1500
         self._respawn_timer_ms = 0
 

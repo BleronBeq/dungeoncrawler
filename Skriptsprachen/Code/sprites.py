@@ -28,7 +28,7 @@ class Player(pygame.sprite.Sprite):
 
         # Sound Boden
         self.step_sound = [
-            pygame.mixer.Sound("Audio/footstep_concrete1.ogg"), #Quelle von der Soundeffekte: https://kenney.itch.io/kenney-game-assets
+            pygame.mixer.Sound("Audio/footstep_concrete1.ogg"), #Quelle der Soundeffekte: https://kenney.itch.io/kenney-game-assets
             pygame.mixer.Sound("Audio/footstep_concrete2.ogg"),
             pygame.mixer.Sound("Audio/footstep_concrete3.ogg"),
             pygame.mixer.Sound("Audio/footstep_concrete4.ogg"),
@@ -44,9 +44,10 @@ class Player(pygame.sprite.Sprite):
         self.death_sound = pygame.mixer.Sound("Audio/elden-ring-death.mp3") #Quelle des Sounds: https://www.youtube.com/@bond_factory/videos
         self.death_sound.set_volume(0.5)
 
-        self.step_timer = 0
+        self.step_timer = 0 # Timer für Schrittgeräusche
 
-    def can_move(self, dx, dy): # TODO: Kollision mit Wänden verändern.
+    # Prüfen, ob Bewegung möglich ist (Kollision)
+    def can_move(self, dx, dy):
         new_rect = self.rect.move(dx, dy)
         tile_x = new_rect.centerx // self.tilewidth
         tile_y = new_rect.centery // self.tileheight
