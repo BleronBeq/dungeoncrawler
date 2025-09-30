@@ -7,7 +7,7 @@ Ein kleines Dungeon-Crawler-Spiel, entwickelt mit **Python**, **pygame-ce** und 
 ## Voraussetzungen & Spiel starten
 
 Bevor man das Spiel startet, müssen folgende Bibliotheken installiert sein.  
-Danach kannst man das Repository klonen und das Spiel direkt starten:
+Danach kann man das Repository klonen und das Spiel direkt starten:
 
 ```bash
 # Bibliotheken installieren
